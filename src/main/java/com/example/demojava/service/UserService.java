@@ -26,7 +26,7 @@ public class UserService implements UserDetailsService {
     private IUserRepository userRepository;
     @Autowired
     private IRoleRepository roleRepository;
-
+//Lưu người dùng sau khi được mã hóa mk
     public void save(@NotNull User user) {
         user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
         userRepository.save(user);
@@ -41,7 +41,7 @@ public class UserService implements UserDetailsService {
                 () -> { throw new UsernameNotFoundException("User not found"); }
         );
     }
-
+//tai thông tin user để xác thực
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         var user = userRepository.findByUsername(username)

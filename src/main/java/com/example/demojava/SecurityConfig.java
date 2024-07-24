@@ -14,12 +14,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserService;
 import org.springframework.security.web.SecurityFilterChain;
 
-@Configuration
-@EnableWebSecurity
-@RequiredArgsConstructor
+@Configuration // Đánh dấu lớp này là một lớp cấu hình cho Spring context
+@EnableWebSecurity // Kích họat tính năng bảo mật của SpSecurity
+@RequiredArgsConstructor //Lombok tự động tạo constructor có tham số cho tất cả cá trường final
 public class SecurityConfig {
 
-    private final UserService userService;
+    private final UserService userService; //thêm userservice cào cấu hình
 
     @Bean
     public UserDetailsService userDetailsService() {
@@ -29,20 +29,20 @@ public class SecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
-    }
+    } //max hóa sử dụng Bcrypt
 
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
-        var auth = new DaoAuthenticationProvider();
-        auth.setUserDetailsService(userDetailsService());
-        auth.setPasswordEncoder(passwordEncoder());
+        var auth = new DaoAuthenticationProvider(); //Tạo nhà cung cấp xác thực
+        auth.setUserDetailsService(userDetailsService()); //chi tiết người dùng
+        auth.setPasswordEncoder(passwordEncoder()); //mã hóa passwork
         return auth;
     }
 
     @Bean
     public SecurityFilterChain securityFilterChain(@NotNull HttpSecurity http) throws Exception {
         return http.authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/css/**", "/js/**","/image/**", "/", "/oauth/**", "/register", "/error", "/products", "/cart", "/cart/**").permitAll()
+                        .requestMatchers("/css/**", "/js/**","/image/**", "/", "/oauth/**", "/register", "/error", "/products", "/cart", "/cart/**").permitAll()// cho phép kh cần login
                         .requestMatchers("/admin/products/edit/**", "/admin/products/add", "/admin/products/delete", "/admin/products","/admin/products/home").hasAnyAuthority("ADMIN")
                         .requestMatchers("/api/**").permitAll()
                         .anyRequest().permitAll()
